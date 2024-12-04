@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> تحدي الاسئله  </title>
+    <link rel="icon" href="تنزيل.jpg">
+    <style>
+        /* الخلفية المتحركة */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #2e3d4a, #707570,rgb(70, 156, 146));
+            background-size: 400% 400%;
+            animation: gradientAnimation 5s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            direction: rtl;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background-color: #39378f;
+            border-radius: 8px;
+            padding: 50px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 250px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #00b7ff;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 50%;
+            padding: 16px;
+            margin: 12px 0;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #12f0d6, #0ff0ec);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border: 2px solid #e04917;
+            background: linear-gradient(45deg, #009688, #00796b);
+            box-shadow: 0 0 10px rgba(0, 150, 136, 0.6);
+        }
+
+        button {
+            padding: 16px;
+            margin: 12px 0;
+            background-color: #00e3f8;
+            color: rgb(38, 13, 229);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 50%;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #1050ff;
+        }
+
+        button:active {
+            background-color: #0f5bf4;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1.2rem;
+        }
+
+        .quiz-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+        }
+
+        .answer-btn {
+            background-color: #097fee;
+            color: white;
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .answer-btn:hover {
+            background-color: #066bb0;
+        }
+
+        #score {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        #next-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #next-btn:hover {
+            background-color: #218838;
+        }
+
+        .player-list {
+            margin-top: 20px;
+        }
+
+        .player-item {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <!-- تسجيل الدخول -->
+    <div id="loginContainer" class="container">
+        <h1>تسجيل الدخول</h1>
+        <input type="text" id="loginUsername" placeholder="اسم المستخدم" required>
+        <!-- <input type="password" id="loginPassword" placeholder="كلمة المرور" required> -->
+        <button onclick="login()">تسجيل الدخول</button>
+        <p id="loginError" class="error-message" style="display:none;">اسم المستخدم أو كلمة المرور غير صحيحة!</p>
+        <!-- <button onclick="showRegister()">إنشاء حساب جديد</button> -->
+    </div>
+
+    <!-- صفحة إنشاء حساب -->
+
+    <!-- <div id="registerContainer" class="container" style="display:none;">
+        <h1>إنشاء حساب جديد</h1>
+        <input type="text" id="registerUsername" placeholder="اسم المستخدم" required>
+        <input type="password" id="registerPassword" placeholder="كلمة المرور" required>
+        <button onclick="register()">إنشاء الحساب</button>
+        <p id="registerError" class="error-message" style="display:none;">اسم المستخدم موجود بالفعل!</p>
+        <button onclick="backToLogin()">الرجوع لتسجيل الدخول</button>
+    </div> -->
+
+    <!-- تحدي الأسئلة -->
+    <div id="quizContainer" class="quiz-container" style="display:none;">
+        <h1> تحدي الاسئله : </h1>
+        <div class="question-container">
+            <p id="question" style="font-family: Arial, Helvetica, sans-serif; color: #f80000; " >سؤال يظهر هنا</p>
+        </div>
+        <div class="answers-container" style="font-size: 50px;">
+            <button style="font-size: 20px;" class="answer-btn" onclick="checkAnswer(0)">إجابة 1</button>
+            <button  style="font-size: 20px;" class="answer-btn" onclick="checkAnswer(1)">إجابة 2</button>
+            <button style="font-size: 20px;" class="answer-btn" onclick="checkAnswer(2)">إجابة 3</button>
+            <button style="font-size: 20px;" class="answer-btn" onclick="checkAnswer(3)">إجابة 4</button>
+        </div>
+        <p id="score">النتيجة: 0</p>
+        <button id="next-btn" onclick="nextQuestion()">السؤال التالي</button>
+        <button style="width: 300px;" id="levelBtn" onclick="changeLevel()">تغيير المستوى</button>
+    </div>
+
+    <div id="adminDashboard" class="container" style="display:none;">
+        <h1>لوحة تحكم المشرف</h1>
+        <p>يمكنك إضافة وتعديل الحسابات، وتغيير نتائج اللاعبين.</p>
+        <div class="player-list" id="playerList"></div>
+        <button  onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <script>
+        // بيانات الحسابات للمشرف واللاعب
+        const users = {
+            'admin': { password: 'admin123', role: 'admin' },
+            'فادي': { password: 'player123', role: 'player', score: 0 },
+            'يما': { password: 'player456', role: 'player', score: 0 },
+            'لؤاي': { password: 'player456', role: 'player', score: 0 },
+            'لمياء': { password: 'player456', role: 'player', score: 0 },
+            'صفوان': { password: 'player456', role: 'player', score: 0 },
+            'عدي': { password: 'player456', role: 'player', score: 0 },
+
+
+
+
+        };
+
+        let currentUser = null;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentLevel = 0; // 0 = level 1, 1 = level 2, 2 = level 3
+
+        const questions = [
+            // المستوى 1
+            [
+            { question: "هل انت جاهز ل بدا ب المستوئ 1 ؟", answers: [ "نعم "],  correctAnswer: 0 },
+
+                { question:  "  السؤال 1 :  ما هو أكبر كوكب في النظام الشمسي؟", answers: ["الأرض", "المشتري", "الزهرة", "المريخ"], correctAnswer: 0 },
+                { question: " ا سؤال 2 : ما هو عنصر الهيدروجين في الجدول الدوري؟" , answers: ["H", "He", "O", "N"], correctAnswer: 0 },
+                { question: " سؤال 3 : ما هو أطول نهر في العالم؟", answers: ["النيل", "الأمازون", "اليانغتسي", "الدانوب"], correctAnswer: 0 },
+
+                // أضف المزيد من الأسئلة هنا حتى تصل إلى 15 سؤالًا
+            ],
+            // المستوى 2
+            [
+            { question: "هل انت جاهز ل بدا ب المستوئ 2 ؟", answers: [ "نعم "],  correctAnswer: 0 },
+
+                { question: " المستوئ 2 سؤال 1 : ما هي عاصمة فرنسا؟", answers: ["باريس", "لندن", "مدريد", "روما"], correctAnswer: 0 },
+                { question: "المستوئ 2 سؤال 2 :  ما هو أكبر محيط في العالم؟", answers: ["المحيط الأطلسي", "المحيط الهادئ", "المحيط الهندي", "المحيط القطبي"], correctAnswer: 1 },
+                { question: " لمستوئ 2 سؤال 3 : ما هو العنصر الذي له الرمز الكيميائي 'Na'؟", answers: ["صوديوم", "نحاس", "زنك", "حديد"], correctAnswer: 0 },
+                // أضف المزيد من الأسئلة هنا حتى تصل إلى 15 سؤالًا
+            ],
+            // المستوى 3
+            [
+            { question: "هل انت جاهز ل بدا ب المستوئ 3 ؟", answers: [ "نعم "],  correctAnswer: 0 },
+
+                { question: " لمستوئ 3 سؤال 1 : من اكتشف قانون الجاذبية؟", answers: ["نيوتن", "أينشتاين", "أرخميدس", "غاليلو"], correctAnswer: 0 },
+                { question: " لمستوئ 3 سؤال 2 : ما هو أسرع حيوان في العالم؟", answers: ["الفهد", "العقاب", "القرش", "الكونغر"], correctAnswer: 0 },
+                { question: " لمستوئ 3 سؤال 3 : أي من هذه الدول لا تستخدم العملة اليورو؟", answers: ["ألمانيا", "فرنسا", "إنجلترا", "إيطاليا"], correctAnswer: 2 },
+                // أضف المزيد من الأسئلة هنا حتى تصل إلى 15 سؤالًا
+            ]
+        ];
+
+        function login() {
+            const username = document.getElementById("loginUsername").value;
+            // const password = document.getElementById("loginPassword").value;
+            if (users[username] && users[username]) {
+                currentUser = username;
+                alert("Welcome  ");
+                if (users[username].role === 'admin') {
+                    document.getElementById("adminDashboard").style.display = "block";
+                    displayPlayers(); // عرض اللاعبين في لوحة تحكم المشرف
+                } else {
+                    document.getElementById("quizContainer").style.display = "block";
+                    loadQuestion();
+                }
+                document.getElementById("loginContainer").style.display = "none";
+            } else {
+                document.getElementById("loginError").style.display = "block";
+            }
+        }
+
+        function register() {
+            const username = document.getElementById("registerUsername").value;
+            const password = document.getElementById("registerPassword").value;
+
+            if (users[username]) {
+                document.getElementById("registerError").style.display = "block";
+            } else {
+                users[username] = { password: password, role: 'player', score: 0 };
+                alert("تم إنشاء الحساب بنجاح!");
+                backToLogin();
+                displayPlayers();
+            }
+        }
+
+        function displayPlayers() {
+            const playerList = document.getElementById("playerList");
+            playerList.innerHTML = '';
+            Object.keys(users).filter(username => users[username].role === 'player').forEach(username => {
+                const player = users[username];
+                const playerItem = document.createElement("div");
+                playerItem.classList.add("player-item");
+                playerItem.innerHTML = `${username} - النتيجة: ${player.score}`;
+                playerList.appendChild(playerItem);
+            });
+        }
+
+        function loadQuestion() {
+            const question = questions[currentLevel][currentQuestionIndex];
+            document.getElementById("question").innerText = question.question;
+            const answerButtons = document.querySelectorAll('.answer-btn');
+            answerButtons.forEach((button, index) => {
+                button.innerText = question.answers[index];
+            });
+            document.getElementById("score").innerText = `النتيجة: ${score}`;
+            document.getElementById("next-btn").style.display = "none";
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const correctAnswer = questions[currentLevel][currentQuestionIndex].correctAnswer;
+            if (selectedAnswer === correctAnswer) {
+                score++;
+            }
+            document.getElementById("score").innerText = `النتيجة: ${score}`;
+            document.getElementById("next-btn").style.display = "block";
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 15) {
+                loadQuestion();
+            } else {
+                alert("لقد انتهيت من هذا المستوى!");
+                document.getElementById("quizContainer").style.display = "none";
+                document.getElementById("loginContainer").style.display = "block";
+            }
+        }
+
+        function changeLevel() {
+            currentLevel++;
+            if (currentLevel >= questions.length) {
+                currentLevel = 0;
+            }
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function logout() {
+            document.getElementById("quizContainer").style.display = "none";
+            document.getElementById("adminDashboard").style.display = "none";
+            document.getElementById("loginContainer").style.display = "block";
+            currentUser = null;
+            currentQuestionIndex = 0;
+            score = 0;
+        }
+
+        function backToLogin() {
+            document.getElementById("registerContainer").style.display = "none";
+            document.getElementById("loginContainer").style.display = "block";
+        }
+
+        function showRegister() {
+            document.getElementById("loginContainer").style.display = "none";
+            document.getElementById("registerContainer").style.display = "block";
+        }
+    </script>
+</body>
+</html>
